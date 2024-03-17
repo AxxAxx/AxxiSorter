@@ -9,16 +9,13 @@ os.system('color')
 number_of_camera_images = 0
 number_of_whatsapp_images = 0
 number_of_movies = 0
+number_of_fails = 0
 
 folder_path = os.path.join(os.path.abspath(os.getcwd()), "iphone_data")
 
 valid_file_extensions = [".jpg", ".JPG", ".jpeg", ".JPEG", ".png", ".PNG"]
 valid_movie_extensions = [".mov", ".MOV"]
 
-#Types of files: 
-#Camera images - .jpg
-#Screenshots   - .png
-#Movies        - .mov
 for subfolder_path in os.listdir(folder_path):
     for file_name in os.listdir(os.path.join(folder_path, subfolder_path)):
         # Create the old file path
@@ -45,6 +42,7 @@ for subfolder_path in os.listdir(folder_path):
                 try:
                     date_time = datetime.fromtimestamp(time_modified).strftime("%Y%m%d-%H%M%S")
                 except:
+                    number_of_fails =+ 1
                     print(f"EXIF metadata not found in file: {file_name}")
                     continue
             else:
@@ -108,7 +106,9 @@ for subfolder_path in os.listdir(folder_path):
             pass
 
 print()
-print("Copied " + str(number_of_camera_images) + " camera images")
-print("Copied " + str(number_of_whatsapp_images) + " Whatsapp images")
-print("Copied " + str(number_of_movies) + " movies")
+print("Copied " + colored(str(number_of_camera_images), 'green') + " camera images")
+print("Copied " + colored(str(number_of_whatsapp_images), 'green') + " Whatsapp images")
+print("Copied " + colored(str(number_of_movies), 'green') + " movies")
+print("Failed to copy " + colored(str(number_of_fails), 'red') + " files")
+
 input("Press Enter to continue...")
