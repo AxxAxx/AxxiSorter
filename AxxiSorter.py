@@ -117,18 +117,14 @@ for subfolder_path in os.listdir(folder_path):
             # Rename the file
             try:
                 if(new_file_name in created_names):
-                    print(new_file_name)
                     new_file_name = new_file_name.split(".")[0] + "_" + get_random_string(4) + "." + new_file_name.split(".")[1]
-                    
                 created_names.append(new_file_name)
-                print(created_names)
 
                 # Create the new folder path
                 new_file_path = os.path.join(temp_path, new_file_name)
 
                 shutil.copy(old_file_path, new_file_path)
-                #print(str(temp_path.split('\\')[-1]))
-                #print(str(file_name) + " copied to folder: " + colored(str(temp_path.split('\\')[-1]), 'green'))
+                print(str(file_name) + " copied to folder: " + colored(str(temp_path.split('\\')[-1]), 'green'))
             except:
                 pass
 
@@ -137,6 +133,7 @@ print("Copied " + colored(str(number_of_camera_images), 'green') + " camera imag
 print("Copied " + colored(str(number_of_whatsapp_images), 'green') + " Whatsapp images")
 print("Copied " + colored(str(number_of_movies), 'green') + " movies")
 print("Copied " + colored(str(number_of_screenshots), 'green') + " screenshots")
+print("Copied " + colored(str(number_of_camera_images + number_of_whatsapp_images + number_of_movies + number_of_screenshots), 'yellow') + " files in TOTAL")
 print("Failed to copy " + colored(str(number_of_fails), 'red') + " files")
 
 input("Press Enter to continue...")
