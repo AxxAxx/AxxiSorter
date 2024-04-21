@@ -53,8 +53,8 @@ for subfolder_path in os.listdir(folder_path):
                     try:
                         date_time = datetime.fromtimestamp(time_modified).strftime("%Y%m%d-%H%M%S")
                     except:
-                        number_of_fails =+ 1
                         print(f"EXIF metadata not found in file: {file_name}")
+                        date_time = "xxx"
                         continue
                 else:
                     # Get the date taken from the metadata
@@ -72,7 +72,6 @@ for subfolder_path in os.listdir(folder_path):
                     # Reformat the date taken to "YYYYMMDD-HHmmss"
                     # NOTE: Change this line to change the date/time format of the output filename
                     date_time = date_taken.strftime("%Y%m%d-%H%M%S")
-
 
             # Combine the new file name and file extension
             new_file_name = date_time + file_extension
@@ -126,7 +125,9 @@ for subfolder_path in os.listdir(folder_path):
                 shutil.copy(old_file_path, new_file_path)
                 print(str(file_name) + " copied to folder: " + colored(str(temp_path.split('\\')[-1]), 'green'))
             except:
-                pass
+                number_of_fails =+ 1
+                print("Failed to move " + str(new_file_name))
+                continue
 
 print()
 print("Copied " + colored(str(number_of_camera_images), 'green') + " camera images")
