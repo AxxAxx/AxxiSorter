@@ -19,13 +19,14 @@ number_of_whatsapp_images = 0
 number_of_movies = 0
 number_of_screenshots = 0
 number_of_fails = 0
-
+number_of_AAE = 0
+number_of_OTHER = 0
 created_names = []
 
 folder_path = os.path.join(os.path.abspath(os.getcwd()), "iphone_data")
 
 valid_file_extensions = [".jpg", ".JPG", ".jpeg", ".JPEG", ".png", ".PNG"]
-valid_movie_extensions = [".mov", ".MOV"]
+valid_movie_extensions = [".mov", ".MOV", ".mp4", ".MP4"]
 
 for subfolder_path in os.listdir(folder_path):
     if(os.path.isdir(os.path.join(folder_path, subfolder_path))):
@@ -48,7 +49,7 @@ for subfolder_path in os.listdir(folder_path):
                 image.close()
 
                 # Check if the metadata exists
-                if metadata is None or file_extension  in valid_movie_extensions:
+                if metadata is None or file_extension in valid_movie_extensions:
                     time_modified = os.path.getmtime(old_file_path)
                     try:
                         date_time = datetime.fromtimestamp(time_modified).strftime("%Y%m%d-%H%M%S")
@@ -57,21 +58,28 @@ for subfolder_path in os.listdir(folder_path):
                         date_time = "xxx"
                         continue
                 else:
-                    # Get the date taken from the metadata
-                    if 36867 in metadata.keys():
-                        date_taken = metadata[36867]
-                    elif 306 in metadata.keys():
-                        date_taken = metadata[306]
-                    else:
-                        print(f"Date not found in file: {file_name}")
-                        continue
+                    try:
+                        # Get the date taken from the metadata
+                        if 36867 in metadata.keys():
+                            date_taken = metadata[36867]
+                            
+                        elif 306 in metadata.keys():
+                            date_taken = metadata[306]
 
-                    # Get the date taken as a datetime object
-                    date_taken = datetime.strptime(date_taken, "%Y:%m:%d %H:%M:%S")
+                        # Get the date taken as a datetime object
+                        date_taken = datetime.strptime(date_taken, "%Y:%m:%d %H:%M:%S")
 
-                    # Reformat the date taken to "YYYYMMDD-HHmmss"
-                    # NOTE: Change this line to change the date/time format of the output filename
-                    date_time = date_taken.strftime("%Y%m%d-%H%M%S")
+                        # Reformat the date taken to "YYYYMMDD-HHmmss"
+                        # NOTE: Change this line to change the date/time format of the output filename
+                        date_time = date_taken.strftime("%Y%m%d-%H%M%S")
+                    except:
+                        time_modified = os.path.getmtime(old_file_path)
+                        try:
+                            date_time = datetime.fromtimestamp(time_modified).strftime("%Y%m%d-%H%M%S")
+                        except:
+                            print(f"EXIF metadata not found in file: {file_name}")
+                            date_time = "xxx"
+                            continue
 
             # Combine the new file name and file extension
             new_file_name = date_time + file_extension
@@ -104,14 +112,11 @@ for subfolder_path in os.listdir(folder_path):
                     os.makedirs(temp_path)
                 number_of_movies += 1
 
-            else:
-                print("#####################################")
-                print("#####################################")
-                print(file_name)
-                print("#####################################")
-                print("#####################################")
-
-
+            elif file_extension == ".AAE":
+                temp_path = os.path.join(folder_path, "AAE")
+                if not os.path.exists(temp_path):
+                    os.makedirs(temp_path)
+                number_of_AAE += 1
 
             # Rename the file
             try:
@@ -134,7 +139,11 @@ print("Copied " + colored(str(number_of_camera_images), 'green') + " camera imag
 print("Copied " + colored(str(number_of_whatsapp_images), 'green') + " Whatsapp images")
 print("Copied " + colored(str(number_of_movies), 'green') + " movies")
 print("Copied " + colored(str(number_of_screenshots), 'green') + " screenshots")
-print("Copied " + colored(str(number_of_camera_images + number_of_whatsapp_images + number_of_movies + number_of_screenshots), 'yellow') + " files in TOTAL")
+print("Copied " + colored(str(number_of_AAE), 'green') + " AAE")
+
+
+print("Copied " + colored(str(number_of_camera_images + number_of_whatsapp_images + number_of_movies + number_of_screenshots + number_of_AAE), 'yellow') + " files in TOTAL")
+
 print("Failed to copy " + colored(str(number_of_fails), 'red') + " files")
 
 input("Press Enter to continue...")
